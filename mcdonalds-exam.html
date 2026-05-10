@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار أمان الغذاء – ماكدونالدز</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Bebas+Neue&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #DA291C;
+  --red2: #b71c1c;
+  --yellow: #FFC72C;
+  --yellow2: #FFD966;
+  --dark: #1a1a1a;
+  --dark2: #242424;
+  --dark3: #2e2e2e;
+  --border: rgba(255,255,255,0.09);
+  --text: #f5f5f5;
+  --muted: rgba(245,245,245,0.45);
+  --green: #4caf50;
+  --shadow-red: rgba(218,41,28,0.35);
+  --shadow-yellow: rgba(255,199,44,0.35);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* ===== SCREENS ===== */
+.screen { display:none; min-height:100vh; flex-direction:column; }
+.screen.active { display:flex; }
+
+/* ===== WELCOME ===== */
+#s-welcome {
+  background: linear-gradient(160deg, #1a0a0a 0%, #1a1a1a 40%, #1a1200 100%);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+#s-welcome::before {
+  content:'';
+  position:absolute;
+  width:700px; height:700px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(218,41,28,0.08) 0%, transparent 70%);
+  top:-200px; right:-200px;
+  pointer-events:none;
+}
+#s-welcome::after {
+  content:'';
+  position:absolute;
+  width:500px; height:500px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,199,44,0.07) 0%, transparent 70%);
+  bottom:-150px; left:-150px;
+  pointer-events:none;
+}
+
+.welcome-box {
+  text-align:center;
+  max-width:520px;
+  width:92%;
+  position:relative;
+  z-index:1;
+  animation: riseIn .7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes riseIn {
+  from { opacity:0; transform:translateY(40px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.mcd-arc {
+  display:inline-block;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:5rem;
+  color: var(--yellow);
+  line-height:1;
+  text-shadow: 0 0 40px rgba(255,199,44,0.4);
+  margin-bottom:4px;
+  letter-spacing:-2px;
+}
+
+.creators-line {
+  font-family: 'Montserrat', sans-serif;
+  font-weight:900;
+  font-size:1.05rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+.creators-line span { color: var(--yellow); }
+
+.welcome-title {
+  font-size:1.6rem;
+  font-weight:900;
+  color:#fff;
+  margin-bottom:6px;
+  line-height:1.3;
+}
+.welcome-sub {
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.8;
+  margin-bottom:36px;
+}
+
+.meta-chips {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:32px;
+}
+.chip {
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:.78rem;
+  font-weight:700;
+  border:1px solid;
+}
+.chip-red   { background:rgba(218,41,28,.15); color:#ff6b6b; border-color:rgba(218,41,28,.3); }
+.chip-yellow{ background:rgba(255,199,44,.12); color:var(--yellow); border-color:rgba(255,199,44,.3); }
+.chip-gray  { background:rgba(255,255,255,.06); color:rgba(255,255,255,.5); border-color:rgba(255,255,255,.1); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; padding:14px 28px; border-radius:12px; border:none;
+  font-family:'Cairo',sans-serif; font-size:.95rem; font-weight:700;
+  cursor:pointer; transition:.22s; text-decoration:none; width:100%;
+}
+.btn-yellow {
+  background:linear-gradient(135deg, var(--yellow), var(--yellow2));
+  color: #1a1a1a;
+  box-shadow: 0 4px 20px var(--shadow-yellow);
+}
+.btn-yellow:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(255,199,44,.5); }
+.btn-ghost {
+  background:rgba(255,255,255,.07);
+  border:1px solid var(--border);
+  color:rgba(255,255,255,.7);
+  margin-top:10px;
+}
+.btn-ghost:hover { background:rgba(255,255,255,.12); color:#fff; }
+.btn-red {
+  background: var(--red);
+  color:#fff;
+  box-shadow: 0 4px 18px var(--shadow-red);
+}
+.btn-red:hover { background:var(--red2); transform:translateY(-1px); }
+.btn-sm { padding:8px 18px; font-size:.82rem; width:auto; }
+
+/* ===== CARD ===== */
+.glass-card {
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 44px;
+}
+@media(max-width:600px){ .glass-card { padding:28px 22px; } }
+
+/* ===== FORMS ===== */
+.fg { margin-bottom:18px; }
+.fg label { display:block; font-size:.82rem; font-weight:700; color:var(--muted); margin-bottom:7px; }
+.fg input {
+  width:100%; padding:13px 16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  color:var(--text); font-family:'Cairo',sans-serif; font-size:.95rem;
+  transition:.2s; text-align:right;
+}
+.fg input:focus { outline:none; border-color:var(--yellow); background:rgba(255,199,44,.07); }
+.fg input::placeholder { color:rgba(255,255,255,.25); }
+
+/* ===== STUDENT ENTRY ===== */
+#s-entry {
+  background: linear-gradient(160deg, #1a0a0a 0%, #1a1a1a 100%);
+  align-items:center; justify-content:center;
+}
+.entry-card { max-width:460px; width:92%; animation:riseIn .5s ease both; }
+.entry-card h2 { font-size:1.4rem; font-weight:900; color:var(--yellow); margin-bottom:4px; }
+.entry-card .sub { color:var(--muted); font-size:.85rem; margin-bottom:28px; }
+
+/* ===== EXAM ===== */
+#s-exam { background: var(--dark); }
+
+.exam-bar {
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
+  gap:12px;
+}
+.exam-bar-left .etitle {
+  font-size:.95rem; font-weight:900; color:var(--yellow);
+}
+.exam-bar-left .estudent {
+  font-size:.75rem; color:var(--muted); margin-top:2px;
+}
+
+.timer-wrap {
+  background:rgba(255,199,44,.1);
+  border:2px solid var(--yellow);
+  border-radius:14px;
+  padding:7px 22px;
+  text-align:center;
+  min-width:110px;
+  transition:.3s;
+}
+.timer-wrap.warn {
+  border-color:var(--red);
+  background:rgba(218,41,28,.15);
+}
+.tlabel { font-size:.62rem; color:var(--muted); letter-spacing:1px; }
+.tval {
+  font-size:1.55rem; font-weight:900;
+  color:var(--yellow); letter-spacing:3px;
+  font-variant-numeric:tabular-nums;
+}
+.timer-wrap.warn .tval { color:#ff7070; animation:pulse-blink 1s ease infinite; }
+@keyframes pulse-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.prog-bar { height:3px; background:rgba(255,255,255,.06); }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--red),var(--yellow)); transition:width .5s ease; }
+
+.exam-body {
+  flex:1; padding:32px 20px;
+  max-width:740px; margin:0 auto; width:100%;
+}
+
+/* q nav dots */
+.q-dots { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:22px; }
+.qdot {
+  width:34px; height:34px; border-radius:8px;
+  border:1.5px solid rgba(255,255,255,.12);
+  background:transparent; color:var(--muted);
+  font-family:'Cairo',sans-serif; font-size:.75rem; font-weight:700;
+  cursor:pointer; transition:.15s;
+}
+.qdot.answered { background:rgba(255,199,44,.18); border-color:var(--yellow); color:var(--yellow); }
+.qdot.current  { background:var(--yellow); border-color:var(--yellow); color:#1a1a1a; }
+
+.q-section-tag {
+  display:inline-block;
+  padding:3px 12px; border-radius:20px;
+  background:rgba(218,41,28,.15); color:#ff7070;
+  border:1px solid rgba(218,41,28,.3);
+  font-size:.72rem; font-weight:700;
+  margin-bottom:8px;
+}
+.q-counter { font-size:.72rem; color:var(--muted); letter-spacing:1px; margin-bottom:5px; }
+.q-text { font-size:1.1rem; font-weight:700; line-height:1.8; margin-bottom:22px; color:#fff; }
+
+.opts { display:flex; flex-direction:column; gap:10px; }
+.opt {
+  background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:14px 18px;
+  color:rgba(255,255,255,.75);
+  font-family:'Cairo',sans-serif; font-size:.9rem;
+  cursor:pointer; transition:.2s;
+  text-align:right;
+  display:flex; align-items:center; gap:12px;
+}
+.opt:hover { background:rgba(255,199,44,.08); border-color:rgba(255,199,44,.3); color:#fff; }
+.opt.sel   { background:rgba(255,199,44,.15); border-color:var(--yellow); color:var(--yellow2); }
+.opt-ltr {
+  width:32px; height:32px; border-radius:8px;
+  background:rgba(255,255,255,.07);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.8rem; font-weight:900; flex-shrink:0;
+  font-family:'Montserrat',sans-serif;
+}
+.opt.sel .opt-ltr { background:var(--yellow); color:#1a1a1a; }
+
+.nav-row { display:flex; gap:10px; margin-top:28px; }
+.nav-row .btn { flex:1; }
+
+/* ===== SUBMITTED ===== */
+#s-submitted {
+  background:linear-gradient(160deg,#0a1a0a,#1a1a1a);
+  align-items:center; justify-content:center;
+}
+.submitted-card { max-width:440px; width:92%; text-align:center; animation:riseIn .6s ease; }
+.submitted-icon { font-size:72px; margin-bottom:16px; display:block; }
+.submitted-card h2 { font-size:1.5rem; font-weight:900; color:var(--yellow); margin-bottom:8px; }
+.submitted-card p { color:var(--muted); font-size:.9rem; line-height:1.8; margin-bottom:28px; }
+.submitted-name { font-size:1.15rem; font-weight:700; color:#fff; margin-bottom:4px; }
+
+/* ===== ADMIN LOGIN ===== */
+#s-admin-login {
+  background:linear-gradient(160deg,#0a0a1a,#1a1a1a);
+  align-items:center; justify-content:center;
+}
+.admin-login-card { max-width:400px; width:92%; animation:riseIn .5s ease; }
+.admin-login-card h2 { font-size:1.4rem; font-weight:900; color:var(--yellow); margin-bottom:4px; }
+.admin-login-card .sub { color:var(--muted); font-size:.85rem; margin-bottom:28px; }
+.err-msg { color:#ff7070; font-size:.82rem; margin-bottom:14px; display:none; }
+
+/* ===== ADMIN PANEL ===== */
+#s-admin { background:#111; }
+.admin-topbar {
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
+}
+.admin-topbar h1 { font-size:1.05rem; font-weight:900; color:var(--yellow); }
+
+.admin-body { padding:28px; max-width:1100px; margin:0 auto; width:100%; }
+
+.stats-row {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+  gap:14px; margin-bottom:28px;
+}
+.stat-card {
+  background:var(--dark2);
+  border:1px solid var(--border);
+  border-radius:16px; padding:20px 22px;
+}
+.stat-card .sv { font-size:2rem; font-weight:900; color:var(--yellow); }
+.stat-card .sl { font-size:.75rem; color:var(--muted); margin-top:3px; }
+
+.section-hd {
+  font-size:.85rem; font-weight:700; color:var(--muted);
+  margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+  text-transform:uppercase; letter-spacing:.5px;
+}
+.section-hd::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.date-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.dpill {
+  padding:7px 18px; border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);
+  background:transparent; color:var(--muted);
+  font-family:'Cairo',sans-serif; font-size:.82rem; font-weight:700;
+  cursor:pointer; transition:.18s;
+}
+.dpill.active { background:var(--yellow); border-color:var(--yellow); color:#1a1a1a; }
+.dpill:hover:not(.active) { background:rgba(255,255,255,.08); color:#fff; }
+
+.table-wrap {
+  background:var(--dark2);
+  border:1px solid var(--border);
+  border-radius:16px; overflow:hidden; overflow-x:auto;
+}
+table { width:100%; border-collapse:collapse; min-width:600px; }
+thead tr { background:rgba(0,0,0,.5); border-bottom:1px solid var(--border); }
+th {
+  padding:13px 18px; text-align:right;
+  font-size:.72rem; font-weight:700;
+  color:var(--muted); text-transform:uppercase; letter-spacing:.5px;
+}
+td {
+  padding:13px 18px; font-size:.88rem;
+  color:rgba(255,255,255,.8);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+tr:last-child td { border-bottom:none; }
+tbody tr:hover { background:rgba(255,255,255,.03); }
+.badge {
+  display:inline-block; padding:4px 12px; border-radius:20px;
+  font-size:.72rem; font-weight:700;
+}
+.badge-green { background:rgba(76,175,80,.18); color:#81c784; border:1px solid rgba(76,175,80,.3); }
+.badge-red   { background:rgba(218,41,28,.18); color:#ff8a80; border:1px solid rgba(218,41,28,.3); }
+
+.empty-tbl {
+  text-align:center; padding:56px 20px; color:var(--muted);
+}
+.empty-tbl .ei { font-size:44px; margin-bottom:10px; }
+.empty-tbl p { font-size:.88rem; }
+
+/* mobile */
+@media(max-width:600px){
+  .exam-bar { padding:10px 14px; }
+  .exam-body { padding:20px 14px; }
+  .admin-body { padding:16px; }
+  .admin-topbar { padding:12px 16px; }
+  .tval { font-size:1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================================================
+     WELCOME
+====================================================== -->
+<div id="s-welcome" class="screen active">
+  <div class="welcome-box">
+    <div class="mcd-arc">M</div>
+    <div class="creators-line">
+      Created by <span>Eman Hassan &amp; Mariam Hassan</span>
+    </div>
+    <h1 class="welcome-title">اختبار وحدة أمان الغذاء</h1>
+    <p class="welcome-sub">
+      اختبار شامل لقياس مستوى معرفتك بمعايير سلامة الغذاء<br>في ماكدونالدز
+    </p>
+    <div class="meta-chips">
+      <span class="chip chip-yellow">⏱ ساعة كاملة</span>
+      <span class="chip chip-red">25 سؤال</span>
+      <span class="chip chip-gray">5 أقسام</span>
+    </div>
+    <button class="btn btn-yellow" onclick="show('s-entry')">🚀 ابدأ الاختبار</button>
+    <button class="btn btn-ghost" onclick="show('s-admin-login')">🔐 لوحة المشرف</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     STUDENT ENTRY
+====================================================== -->
+<div id="s-entry" class="screen">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;
+              background:linear-gradient(160deg,#1a0a0a,#1a1a1a);padding:24px">
+    <div class="entry-card glass-card">
+      <h2>📋 بياناتك أولاً</h2>
+      <p class="sub">أدخل بياناتك بدقة قبل بدء الاختبار</p>
+
+      <div class="fg">
+        <label>الاسم بالكامل</label>
+        <input type="text" id="inp-name" placeholder="اكتب اسمك هنا..." maxlength="60">
+      </div>
+      <div class="fg">
+        <label>اسم المطعم</label>
+        <input type="text" id="inp-rest" placeholder="مثال: ماكدونالدز مدينة نصر..." maxlength="60">
+      </div>
+      <div class="fg">
+        <label>المدير المباشر</label>
+        <input type="text" id="inp-mgr" placeholder="اسم مديرك المباشر..." maxlength="60">
+      </div>
+
+      <button class="btn btn-yellow" onclick="startExam()" style="margin-top:6px">▶ ابدأ الاختبار الآن</button>
+      <button class="btn btn-ghost" onclick="show('s-welcome')">رجوع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     EXAM
+====================================================== -->
+<div id="s-exam" class="screen">
+  <div class="exam-bar">
+    <div class="exam-bar-left">
+      <div class="etitle">اختبار أمان الغذاء – ماكدونالدز</div>
+      <div class="estudent" id="bar-student"></div>
+    </div>
+    <div class="timer-wrap" id="timer-wrap">
+      <div class="tlabel">الوقت المتبقي</div>
+      <div class="tval" id="tval">60:00</div>
+    </div>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+
+  <div class="exam-body">
+    <div class="q-dots" id="q-dots"></div>
+    <div class="q-section-tag" id="q-section"></div>
+    <div class="q-counter"   id="q-counter"></div>
+    <div class="q-text"      id="q-text"></div>
+    <div class="opts"        id="opts"></div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btn-prev" onclick="prevQ()">◀ السابق</button>
+      <button class="btn btn-yellow" id="btn-next" onclick="nextQ()">التالي ▶</button>
+      <button class="btn btn-red"    id="btn-submit" onclick="submitExam()" style="display:none">✅ تسليم الاختبار</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     SUBMITTED (student sees this, no score)
+====================================================== -->
+<div id="s-submitted" class="screen">
+  <div class="submitted-card glass-card" style="margin:auto">
+    <span class="submitted-icon">✅</span>
+    <div class="submitted-name" id="sub-name"></div>
+    <h2>تم تسليم اختبارك بنجاح!</h2>
+    <p>
+      شكراً لإتمامك الاختبار.<br>
+      ستعلمك إدارتك بالنتيجة في الوقت المناسب.
+    </p>
+    <button class="btn btn-yellow" onclick="show('s-welcome')">🏠 الرئيسية</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     ADMIN LOGIN
+====================================================== -->
+<div id="s-admin-login" class="screen">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;
+              background:linear-gradient(160deg,#0a0a1a,#1a1a1a);padding:24px">
+    <div class="admin-login-card glass-card">
+      <h2>🔐 دخول المشرف</h2>
+      <p class="sub">هذه اللوحة للمشرفين فقط</p>
+      <div class="fg">
+        <label>كلمة المرور</label>
+        <input type="password" id="inp-pass" placeholder="••••••••"
+               onkeydown="if(event.key==='Enter') adminLogin()">
+      </div>
+      <p class="err-msg" id="pass-err">❌ كلمة المرور غير صحيحة</p>
+      <button class="btn btn-yellow" onclick="adminLogin()">دخول</button>
+      <button class="btn btn-ghost"  onclick="show('s-welcome')">رجوع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     ADMIN PANEL
+====================================================== -->
+<div id="s-admin" class="screen">
+  <div class="admin-topbar">
+    <h1>📊 لوحة تحكم المشرف – أمان الغذاء</h1>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-red btn-sm" onclick="clearAll()">🗑 حذف الكل</button>
+      <button class="btn btn-ghost btn-sm" onclick="show('s-welcome')">خروج</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="stats-row" id="admin-stats"></div>
+
+    <div class="section-hd">النتائج حسب التاريخ</div>
+    <div class="date-pills" id="date-pills"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>المطعم</th>
+            <th>المدير المباشر</th>
+            <th>النتيجة</th>
+            <th>النسبة</th>
+            <th>الوقت</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+      <div id="empty-tbl" class="empty-tbl" style="display:none">
+        <div class="ei">📭</div>
+        <p>لا توجد نتائج في هذا اليوم</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     SCRIPT
+====================================================== -->
+<script>
+/* ---- CONFIG ---- */
+const ADMIN_PASS    = "Mimi2023";   // ← غيّري كلمة المرور هنا
+const EXAM_MINUTES  = 60;
+const PASS_PCT      = 60;
+const STORAGE_KEY   = "mcd_food_safety_v1";
+
+/* ---- QUESTIONS ---- */
+const QUESTIONS = [
+  // قسم 1: أنواع التلوث
+  { sec:"القسم الأول: أنواع التلوث", q:"ماذا يعني تلوث الغذاء؟",
+    opts:["نقص المكونات في الطعام","دخول شيء ضار إلى الغذاء","ارتفاع درجة حرارة الطعام","انتهاء صلاحية المنتج"], ans:1 },
+  { sec:"القسم الأول: أنواع التلوث", q:"كم عدد أنواع التلوث الغذائي المذكورة في الدليل؟",
+    opts:["2","3","4","5"], ans:2 },
+  { sec:"القسم الأول: أنواع التلوث", q:"أي مما يلي يعد مثالاً على التلوث البيولوجي؟",
+    opts:["قطعة زجاج في الطعام","بكتيريا ضارة تلامس الغذاء","مادة كيميائية تمس الطعام","شعرة تسقط في الوجبة"], ans:1 },
+  { sec:"القسم الأول: أنواع التلوث", q:"ما الذي يجعل البكتيريا أكثر خطورة؟",
+    opts:["لونها الأخضر","رائحتها الكريهة","قدرتها على التكاثر بسرعة مذهلة في الظروف المناسبة","حجمها الكبير"], ans:2 },
+  { sec:"القسم الأول: أنواع التلوث", q:"ما المقصود بالتلوث المادي؟",
+    opts:["دخول بكتيريا إلى الطعام","دخول مواد كيميائية إلى الطعام","دخول جسم غريب مثل البلاستيك أو الزجاج إلى الطعام","نمو فطريات على الطعام"], ans:2 },
+  { sec:"القسم الأول: أنواع التلوث", q:"متى يحدث التلوث الكيميائي؟",
+    opts:["عند وجود حشرات في المطعم","عند سقوط شعر في الطعام","عندما يلامس الطعام مواد كيميائية أو يحضر على أسطح غير نظيفة","عند انقطاع الكهرباء"], ans:2 },
+  { sec:"القسم الأول: أنواع التلوث", q:"ما الخطر الرئيسي للتلوث بالمواد المسببة للحساسية؟",
+    opts:["تغيير طعم الطعام فقط","حتى كمية صغيرة جداً من المكون الخاطئ قد تسبب أعراضاً خطيرة","تسبب رائحة كريهة للطعام","لا يوجد خطر حقيقي إذا كانت الكمية قليلة"], ans:1 },
+
+  // قسم 2: ظروف نمو البكتيريا
+  { sec:"القسم الثاني: ظروف نمو البكتيريا", q:"أي من العوامل التالية يساعد البكتيريا على النمو؟",
+    opts:["البرودة الشديدة","الجفاف التام","الدفء والرطوبة والوقت والغذاء","الضوء الشديد"], ans:2 },
+  { sec:"القسم الثاني: ظروف نمو البكتيريا", q:"ما القاعدة الذهبية للحفاظ على أمان الغذاء من البكتيريا؟",
+    opts:["افحص الطعام يومياً","احفظ الطعام الساخن ساخناً والطعام البارد بارداً","لا تغطِّ الطعام حتى يتنفس","أضف الملح لكل وجبة"], ans:1 },
+  { sec:"القسم الثاني: ظروف نمو البكتيريا", q:"لماذا يعد الوقت عاملاً مهماً في نمو البكتيريا؟",
+    opts:["لأن البكتيريا تموت بسرعة","لأن طول مدة تعرض الطعام يزيد احتمالية تكاثرها","لأن الوقت يحسن طعم الطعام","لأن البكتيريا تحتاج أسابيع للنمو"], ans:1 },
+
+  // قسم 3: النظافة الشخصية
+  { sec:"القسم الثالث: النظافة الشخصية", q:"ما الخطوة الأولى الصحيحة عند غسل اليدين؟",
+    opts:["وضع الصابون مباشرة","بل اليدين بالماء الدافئ الجاري","تجفيف اليدين بالمنشفة","فرك اليدين معاً دون ماء"], ans:1 },
+  { sec:"القسم الثالث: النظافة الشخصية", q:"عبر أي مما يلي يمكن أن تنتقل البكتيريا إلى الغذاء؟",
+    opts:["من خلال الأيدي والملابس والأنف والفم والجلد","من خلال الهواء فقط","من خلال الطعام المطبوخ فقط","من خلال الأدوات النظيفة فقط"], ans:0 },
+  { sec:"القسم الثالث: النظافة الشخصية", q:"ما الإجراء الصحيح عند وجود جرح أو إصابة في اليد أثناء العمل؟",
+    opts:["الاستمرار في العمل دون إجراء","وضع قفاز شفاف فقط","تغطيته بضمادة مضادة للماء مرئية بوضوح وإبلاغ قائد الوردية","غسل الجرح بالماء فقط والمتابعة"], ans:2 },
+  { sec:"القسم الثالث: النظافة الشخصية", q:"ما الذي يجب تجنبه بشأن الأظافر أثناء العمل في ماكدونالدز؟",
+    opts:["قص الأظافر بانتظام","غسل الأيدي قبل التعامل مع الطعام","ارتداء الأظافر الصناعية أو طلاء الأظافر","الاحتفاظ بالأظافر قصيرة ونظيفة"], ans:2 },
+  { sec:"القسم الثالث: النظافة الشخصية", q:"متى يجب على الموظف البقاء في المنزل وعدم العمل؟",
+    opts:["عند الشعور بالتعب الخفيف","عند المعاناة من أعراض مثل القيء أو الإسهال أو الحمى","عند الشعور بالجوع","عند وجود صداع بسيط"], ans:1 },
+
+  // قسم 4: التعامل مع الطعام والتخزين
+  { sec:"القسم الرابع: التعامل مع الطعام والتخزين", q:"ما نوع القفازات المستخدمة عند التعامل مع اللحوم الخام غير المطهية؟",
+    opts:["القفازات الشفافة","القفازات الزرقاء","القفازات البيضاء","أي قفازات متاحة"], ans:1 },
+  { sec:"القسم الرابع: التعامل مع الطعام والتخزين", q:"ما المبدأ الصحيح لتدوير الأطعمة في المخزن؟",
+    opts:["الداخل أولاً خارج أولاً (FIFO)","الأحدث يستخدم أولاً","الأثقل يوضع في المقدمة","لا يهم الترتيب"], ans:0 },
+  { sec:"القسم الرابع: التعامل مع الطعام والتخزين", q:"ماذا يجب فعله عند اكتشاف طعام لا يبدو جيداً ولكنه ضمن تاريخ الصلاحية؟",
+    opts:["استخدامه لأنه لم تنته صلاحيته","إعطاؤه لزملاء العمل","عدم استخدامه وإبلاغ قائد الوردية","وضعه في المجمد"], ans:2 },
+  { sec:"القسم الرابع: التعامل مع الطعام والتخزين", q:"لماذا يجب عدم إضافة مكونات جديدة إلى حاوية تحتوي على مكونات قديمة؟",
+    opts:["لأن ذلك يغير طعم الطعام","لأن العبوة المستخدمة قد تركت في درجة حرارة الغرفة مما يزيد خطر انتقال البكتيريا","لأن الحاوية تصبح ثقيلة","لأن ذلك يستغرق وقتاً طويلاً"], ans:1 },
+  { sec:"القسم الرابع: التعامل مع الطعام والتخزين", q:"ما الذي يجب فعله فوراً إذا سقط طعام على الأرض؟",
+    opts:["التقاطه وتنظيفه وإعادة استخدامه","تركه ومواصلة العمل","التخلص منه وغسل الأدوات وتعقيمها وتغيير القفازات وغسل اليدين","وضعه في الثلاجة"], ans:2 },
+
+  // قسم 5: التنظيف والبيئة
+  { sec:"القسم الخامس: التنظيف والبيئة", q:"ما معنى عبارة 'التنظيف أثناء العمل'؟",
+    opts:["تنظيف المطعم بعد إغلاقه فقط","تنظيف الأماكن أثناء العمل وليس بعد الانتهاء فقط","تنظيف الأدوات مرة واحدة في اليوم","ترك التنظيف لفريق متخصص"], ans:1 },
+  { sec:"القسم الخامس: التنظيف والبيئة", q:"ما الخطوة الأولى عند تنظيف الأسطح يدوياً؟",
+    opts:["استخدام مادة معقمة مباشرة","شطف السطح بالماء الساخن","استخدام فوطة معقمة والمواد الكيميائية المناسبة لتنظيف السطح","تجفيف السطح أولاً"], ans:2 },
+  { sec:"القسم الخامس: التنظيف والبيئة", q:"ما الهدف من استخدام المواد المعقمة بعد التنظيف؟",
+    opts:["لإضفاء رائحة جيدة","لتقليل الجراثيم المسببة للتسمم الغذائي إلى مستوى آمن","لتلميع الأسطح","لتسريع عملية التجفيف"], ans:1 },
+  { sec:"القسم الخامس: التنظيف والبيئة", q:"لماذا يجب استخدام المواد الكيميائية المعتمدة من ماكدونالدز فقط؟",
+    opts:["لأنها أرخص ثمناً","لأنها ذات رائحة أفضل","لضمان الأمان والفعالية في التنظيف ومنع التلوث الكيميائي","لأن المواد الأخرى نادرة"], ans:2 },
+  { sec:"القسم الخامس: التنظيف والبيئة", q:"أي مما يلي من أنواع الآفات التي قد تدخل المطعم؟",
+    opts:["الحشرات كالذباب والنمل والصراصير، والقوارض كالفئران، والطيور كالحمام","الطيور الكبيرة فقط","الحيوانات البرية الكبيرة فقط","لا توجد آفات في المطاعم"], ans:0 }
+];
+
+/* ---- STATE ---- */
+let student = {};
+let answers = [];
+let curQ    = 0;
+let timerID = null;
+let secsLeft= 0;
+let selDate = null;
+
+/* ---- SCREEN ---- */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 's-admin') loadAdmin();
+}
+
+/* ---- ADMIN LOGIN ---- */
+function adminLogin() {
+  const v = document.getElementById('inp-pass').value;
+  const err = document.getElementById('pass-err');
+  if (v === ADMIN_PASS) {
+    document.getElementById('inp-pass').value = '';
+    err.style.display = 'none';
+    show('s-admin');
+  } else {
+    err.style.display = 'block';
+    document.getElementById('inp-pass').value = '';
+  }
+}
+
+/* ---- START EXAM ---- */
+function startExam() {
+  const name = document.getElementById('inp-name').value.trim();
+  const rest = document.getElementById('inp-rest').value.trim();
+  const mgr  = document.getElementById('inp-mgr').value.trim();
+  if (!name || !rest || !mgr) { alert('من فضلك أكمل جميع البيانات'); return; }
+  student = { name, rest, mgr };
+  answers = new Array(QUESTIONS.length).fill(null);
+  curQ    = 0;
+  secsLeft = EXAM_MINUTES * 60;
+  document.getElementById('bar-student').textContent = name + ' | ' + rest;
+  buildDots();
+  renderQ();
+  show('s-exam');
+  startTimer();
+}
+
+/* ---- TIMER ---- */
+function startTimer() {
+  clearInterval(timerID);
+  updateTimerDisplay();
+  timerID = setInterval(() => {
+    secsLeft--;
+    updateTimerDisplay();
+    if (secsLeft <= 0) { clearInterval(timerID); doSubmit(true); }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const m = Math.floor(secsLeft / 60);
+  const s = secsLeft % 60;
+  document.getElementById('tval').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const wrap = document.getElementById('timer-wrap');
+  secsLeft <= 120 ? wrap.classList.add('warn') : wrap.classList.remove('warn');
+}
+
+/* ---- DOTS ---- */
+function buildDots() {
+  const c = document.getElementById('q-dots');
+  c.innerHTML = QUESTIONS.map((_,i) =>
+    `<button class="qdot ${i===curQ?'current':''}" id="dot${i}" onclick="goQ(${i})">${i+1}</button>`
+  ).join('');
+}
+function updateDots() {
+  QUESTIONS.forEach((_,i) => {
+    const d = document.getElementById('dot'+i);
+    if (!d) return;
+    d.className = 'qdot';
+    if (i === curQ)          d.classList.add('current');
+    else if (answers[i]!==null) d.classList.add('answered');
+  });
+}
+
+/* ---- RENDER QUESTION ---- */
+function renderQ() {
+  const total = QUESTIONS.length;
+  const qq    = QUESTIONS[curQ];
+  const ltrs  = ['A','B','C','D'];
+
+  document.getElementById('q-section').textContent = qq.sec;
+  document.getElementById('q-counter').textContent = `السؤال ${curQ+1} من ${total}`;
+  document.getElementById('q-text').textContent    = qq.q;
+  document.getElementById('prog-fill').style.width = `${((curQ+1)/total)*100}%`;
+
+  document.getElementById('opts').innerHTML = qq.opts.map((o,i) => `
+    <button class="opt ${answers[curQ]===i?'sel':''}" onclick="pick(${i})">
+      <span class="opt-ltr">${ltrs[i]}</span>
+      <span>${o}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('btn-prev').style.display   = curQ===0 ? 'none' : 'flex';
+  document.getElementById('btn-next').style.display   = curQ < total-1 ? 'flex' : 'none';
+  document.getElementById('btn-submit').style.display = curQ === total-1 ? 'flex' : 'none';
+  updateDots();
+}
+
+function pick(i) { answers[curQ]=i; renderQ(); }
+function goQ(i)  { curQ=i; renderQ(); }
+function prevQ() { if(curQ>0){ curQ--; renderQ(); } }
+function nextQ() { if(curQ<QUESTIONS.length-1){ curQ++; renderQ(); } }
+
+/* ---- SUBMIT ---- */
+function submitExam() {
+  const unanswered = answers.filter(a=>a===null).length;
+  if (unanswered > 0) {
+    if (!confirm(`لديك ${unanswered} سؤال لم تجب عليه. هل تريد التسليم؟`)) return;
+  }
+  doSubmit(false);
+}
+
+function doSubmit(auto) {
+  clearInterval(timerID);
+  let correct = 0;
+  answers.forEach((a,i) => { if (a === QUESTIONS[i].ans) correct++; });
+  const total   = QUESTIONS.length;
+  const pct     = Math.round((correct/total)*100);
+  const passed  = pct >= PASS_PCT;
+  const wrong   = answers.filter((a,i) => a!==null && a!==QUESTIONS[i].ans).length;
+  const skipped = answers.filter(a=>a===null).length;
+
+  // save
+  const now  = new Date();
+  const dKey = now.toLocaleDateString('en-GB').replace(/\//g,'-'); // DD-MM-YYYY
+  const tStr = now.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  const all  = getAll();
+  if (!all[dKey]) all[dKey] = [];
+  all[dKey].push({ name:student.name, rest:student.rest, mgr:student.mgr,
+                   score:correct, total, pct, passed, wrong, skipped, time:tStr });
+  save(all);
+
+  // show submitted screen (no score shown)
+  document.getElementById('sub-name').textContent = student.name;
+  show('s-submitted');
+}
+
+/* ---- STORAGE ---- */
+function getAll() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch{return{};} }
+function save(d)  { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+/* ---- ADMIN PANEL ---- */
+function loadAdmin() {
+  const all   = getAll();
+  const dates = Object.keys(all).sort((a,b)=>{
+    const [da,ma,ya] = a.split('-').map(Number);
+    const [db,mb,yb] = b.split('-').map(Number);
+    return new Date(yb,mb-1,db) - new Date(ya,ma-1,da);
+  });
+
+  const allEntries = dates.flatMap(d=>all[d]);
+  const passCount  = allEntries.filter(e=>e.passed).length;
+  const avgPct     = allEntries.length
+    ? Math.round(allEntries.reduce((s,e)=>s+e.pct,0)/allEntries.length) : 0;
+
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stat-card"><div class="sv">${allEntries.length}</div><div class="sl">إجمالي المشتركين</div></div>
+    <div class="stat-card"><div class="sv" style="color:var(--green)">${passCount}</div><div class="sl">ناجحين</div></div>
+    <div class="stat-card"><div class="sv" style="color:var(--red)">${allEntries.length-passCount}</div><div class="sl">راسبين</div></div>
+    <div class="stat-card"><div class="sv">${avgPct}%</div><div class="sl">متوسط النتائج</div></div>
+    <div class="stat-card"><div class="sv">${dates.length}</div><div class="sl">أيام الاختبار</div></div>
+  `;
+
+  if (!selDate || !all[selDate]) selDate = dates[0] || null;
+
+  document.getElementById('date-pills').innerHTML = dates.length
+    ? dates.map(d=>`<button class="dpill ${d===selDate?'active':''}" onclick="pickDate('${d}')">${d}</button>`).join('')
+    : '<span style="color:var(--muted);font-size:.85rem">لا توجد بيانات بعد</span>';
+
+  renderTable(selDate ? (all[selDate]||[]) : []);
+}
+
+function pickDate(d) { selDate=d; loadAdmin(); }
+
+function renderTable(rows) {
+  const body  = document.getElementById('results-body');
+  const empty = document.getElementById('empty-tbl');
+  if (!rows.length) { body.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  body.innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.rest}</td>
+      <td>${r.mgr}</td>
+      <td>${r.score} / ${r.total}</td>
+      <td>${r.pct}%</td>
+      <td style="font-size:.78rem;color:var(--muted)">${r.time}</td>
+      <td><span class="badge ${r.passed?'badge-green':'badge-red'}">${r.passed?'✅ ناجح':'❌ راسب'}</span></td>
+    </tr>
+  `).join('');
+}
+
+function clearAll() {
+  if (confirm('هل أنت متأكدة من حذف جميع النتائج؟ لا يمكن التراجع!')) {
+    localStorage.removeItem(STORAGE_KEY);
+    selDate = null;
+    loadAdmin();
+  }
+}
+</script>
+</body>
+</html>
